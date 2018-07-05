@@ -141,6 +141,7 @@ grunt.initConfig({
     }
   }
 });
+```
 
 ## License
 Copyright (c) 2013 Merrick Christensen
