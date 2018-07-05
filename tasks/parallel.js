@@ -9,6 +9,18 @@
 module.exports = function(grunt) {
   var Q = require('q');
   var lpad = require('lpad');
+  
+  var config = grunt.option('parallelconfig') || null;
+  if (config) {
+        // merge back in config properties
+        try {
+            var configObj=JSON.parse(config);
+            grunt.config.merge(configObj);
+            
+        } catch(e) {}
+    }
+  
+  
 
   function spawn(task) {
     var deferred = Q.defer();
@@ -39,7 +51,8 @@ module.exports = function(grunt) {
     var done = this.async();
     var options = this.options({
       grunt: false,
-      stream: false
+      stream: false,
+      config: false
     });
     var flags = grunt.option.flags();
 
@@ -52,6 +65,19 @@ module.exports = function(grunt) {
         }
       });
     }
+    
+    if (options.config) {
+        // overtake some properties from the grunt config object (will be merged back again after this module loads)
+        var configObj={};
+        options.config.forEach(function ( configProp ) {
+            configObj[configProp] = grunt.config.get(configProp);
+        });
+        
+        flags.push('--parallelconfig=' + JSON.stringify(configObj));
+    }
+    
+    
+    
 
     // Normalize tasks config.
     this.data.tasks = this.data.tasks.map(function(task) {
