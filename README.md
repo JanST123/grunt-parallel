@@ -126,6 +126,22 @@ This will only work with grunt processes!
 Length is somehow limited, because command line parameters were used!
 This works only from the main process to the spawned childrens. Changing the config within one child will not have any effect to the config within other childs or the main pricess.
 
+```javascript
+
+grunt.initConfig({
+  domain: "foo",
+  
+  parallel: {
+    assets: {
+      options: {
+        grunt: true.
+        options: ['domain']
+      },
+      tasks: ['fast', 'block', 'fast']
+    }
+  }
+});
+
 ## License
 Copyright (c) 2013 Merrick Christensen
 Licensed under the MIT license.
