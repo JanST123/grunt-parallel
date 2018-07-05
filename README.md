@@ -119,6 +119,13 @@ grunt.initConfig({
 
 One might target the task using `grunt parallel:assets`. This would run compass, requirejs, and a custom shell script at the same time, each logging to your console when they are done.
 
+#### Overtaking config properties
+
+Sometimes you want some properties from grunt.config to persist in the spawned task. To do this you can put `config: <Array of config props>` in your tasks configuration, and grunt-parallel will apply the given properties to the spawned grunt process.
+This will only work with grunt processes!
+Length is somehow limited, because command line parameters were used!
+This works only from the main process to the spawned childrens. Changing the config within one child will not have any effect to the config within other childs or the main pricess.
+
 ## License
 Copyright (c) 2013 Merrick Christensen
 Licensed under the MIT license.
