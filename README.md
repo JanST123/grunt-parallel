@@ -134,7 +134,7 @@ grunt.initConfig({
   parallel: {
     assets: {
       options: {
-        grunt: true.
+        grunt: true,
         options: ['domain']
       },
       tasks: ['fast', 'block', 'fast']
