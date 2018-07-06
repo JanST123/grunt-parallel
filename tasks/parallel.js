@@ -52,7 +52,7 @@ module.exports = function(grunt) {
     var options = this.options({
       grunt: false,
       stream: false,
-      config: false
+      exposeGruntConfigKeys: false
     });
     var flags = grunt.option.flags();
 
@@ -66,13 +66,14 @@ module.exports = function(grunt) {
       });
     }
     
-    if (options.config) {
-        // overtake some properties from the grunt config object (will be merged back again after this module loads)
-        var configObj={};
-        options.config.forEach(function ( configProp ) {
+    // If the configuration specifies that grunt.config keys should be exposed to the spawned processes, make it so.
+    if (options.exposeGruntConfigKeys !== false) {
+        var configObj = {};
+        options.exposeGruntConfigKeys.forEach(function(configProp) {
             configObj[configProp] = grunt.config.get(configProp);
         });
         
+        // value of the parallelconfig param will be merged back again after this module loads
         flags.push('--parallelconfig=' + JSON.stringify(configObj));
     }
     
