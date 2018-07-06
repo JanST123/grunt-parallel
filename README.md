@@ -119,28 +119,53 @@ grunt.initConfig({
 
 One might target the task using `grunt parallel:assets`. This would run compass, requirejs, and a custom shell script at the same time, each logging to your console when they are done.
 
-#### Overtaking config properties
+#### Expose grunt.config properties
 
-Sometimes you want some properties from grunt.config to persist in the spawned task. To do this you can put `config: <Array of config props>` in your tasks configuration, and grunt-parallel will apply the given properties to the spawned grunt process.
-This will only work with grunt processes!
-Length is somehow limited, because command line parameters were used!
-This works only from the main process to the spawned childrens. Changing the config within one child will not have any effect to the config within other childs or the main pricess.
+Sometimes you want some properties from grunt.config to persist in the spawned task. To do this you can put `exposeGruntConfigKeys: <Array of config props>` in your tasks configuration, and grunt-parallel will apply the given properties to the spawned grunt process.
+* This will only work with grunt processes!
+* Length may be somehow limited, because command line parameters were used!
+* This works only from the main process to the spawned childrens. Changing the config within one child will not have any effect to the config within other childs or the main pricess.
 
 ```javascript
-
+var child_process = require('child_process');
 grunt.initConfig({
-  domain: "foo",
+  git_get_head: {default:""},    
   
   parallel: {
-    assets: {
+    uglify: {
       options: {
         grunt: true,
-        options: ['domain']
+        exposeGruntConfigKeys: ['git_head']
       },
-      tasks: ['fast', 'block', 'fast']
+      tasks: ['uglify:task1', 'uglify:task2']
     }
-  }
+  },
+  
+  uglify: {
+      options: {
+        banner: "/* GIT HEAD is <%= git_head %> */"
+      },
+
+      task1: {
+        src: "dist/app.js",
+        dest: "dist/app.min.js"
+      },
+      task2: {
+        src: "dist/ux.js",
+        dest: "dist/ux.min.js"
+      }
+    }
 });
+
+grunt.registerMultiTask('git_get_head', 'get git HEAD hash', function() {
+        grunt.config.set('git_head', String(child_process.execFileSync(
+                                        'git', 
+                                        ["rev-parse", "HEAD"]
+                                     )).split("\n")[0]);
+});
+
+/* get git head once, expose it to spawned childs */
+grunt.registerTask("default", ["git_get_head", "parallel:uglify"]);
 ```
 
 ## License
