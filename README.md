@@ -121,7 +121,7 @@ One might target the task using `grunt parallel:assets`. This would run compass,
 
 #### Expose grunt.config properties
 
-Sometimes you want some properties from grunt.config to persist in the spawned task. To do this you can put `exposeGruntConfigKeys: <Array of config props>` in your tasks configuration, and grunt-parallel will apply the given properties to the spawned grunt process.
+While constant config values are always available to spawned subtasks, sometimes config properties were changed dynamically by other tasks. You can expose this config properties to the spawned tasks by putting `exposeGruntConfigKeys: <Array of config props>` in your tasks configuration, and grunt-parallel will apply the given properties to the spawned grunt process.
 * This will only work with grunt processes!
 * Length may be somehow limited, because command line parameters were used!
 * This works only from the main process to the spawned childrens. Changing the config within one child will not have any effect to the config within other childs or the main pricess.
@@ -158,10 +158,10 @@ grunt.initConfig({
 });
 
 grunt.registerMultiTask('git_get_head', 'get git HEAD hash', function() {
-        grunt.config.set('git_head', String(child_process.execFileSync(
-                                        'git', 
-                                        ["rev-parse", "HEAD"]
-                                     )).split("\n")[0]);
+    grunt.config.set('git_head', String(child_process.execFileSync(
+                                     'git', 
+                                     ["rev-parse", "HEAD"]
+                                 )).split("\n")[0]);
 });
 
 /* get git head once, expose it to spawned childs */
