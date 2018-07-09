@@ -142,26 +142,26 @@ grunt.initConfig({
   },
   
   uglify: {
-      options: {
-        banner: "/* GIT HEAD is <%= git_head %> */"
-      },
+    options: {
+      banner: "/* GIT HEAD is <%= git_head %> */"
+    },
 
-      task1: {
-        src: "dist/app.js",
-        dest: "dist/app.min.js"
-      },
-      task2: {
-        src: "dist/ux.js",
-        dest: "dist/ux.min.js"
-      }
+    task1: {
+      src: "dist/app.js",
+      dest: "dist/app.min.js"
+    },
+    task2: {
+      src: "dist/ux.js",
+      dest: "dist/ux.min.js"
     }
+  }
 });
 
 grunt.registerMultiTask('git_get_head', 'get git HEAD hash', function() {
-    grunt.config.set('git_head', String(child_process.execFileSync(
-                                     'git', 
-                                     ["rev-parse", "HEAD"]
-                                 )).split("\n")[0]);
+  grunt.config.set('git_head', String(child_process.execFileSync(
+                                   'git', 
+                                   ["rev-parse", "HEAD"]
+                               )).split("\n")[0]);
 });
 
 /* get git head once, expose it to spawned childs */
