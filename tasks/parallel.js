@@ -14,7 +14,7 @@ module.exports = function(grunt) {
   if (config) {
         // merge back in config properties
         try {
-            var configObj=JSON.parse(config);
+            var configObj = JSON.parse(config);
             grunt.config.merge(configObj);
             
         } catch(e) {}
